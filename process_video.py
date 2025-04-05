@@ -118,6 +118,16 @@ def create_surface(heights, save_path):
     x, t = np.meshgrid(np.arange(heights.shape[1]) * width_pix_to_cm, np.arange(heights.shape[0]) / 60.0)
 
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+    # according to ioannis, we only need 20 cm onwards
+    x = x[:, 8:] - 20.0
+    t = t[:, 8:]
+    heights = heights[:, 8:]
+
+    # compute "surface area", average cm^2 area per second
+    flame_cm2_s = (heights * (60.0 / 24.0)).sum() / heights.shape[0]
+    print(flame_cm2_s)
+
     surf = ax.plot_surface(x, t, heights, cmap=cm.coolwarm, linewidth=0, antialiased=False)
     ax.set_xlabel("width, cm")
     ax.set_ylabel("time, seconds")
